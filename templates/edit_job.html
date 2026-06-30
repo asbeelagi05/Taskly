@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Edit Job</title>
+</head>
+
+<body>
+
+<h1>Edit Job</h1>
+
+<form method="POST">
+
+    <label>Job Title</label><br>
+    <input
+        type="text"
+        name="title"
+        value="{{ job.title }}"
+        required
+    >
+    <br><br>
+
+    <label>Description</label><br>
+    <textarea
+        name="description"
+        required
+    >{{ job.description }}</textarea>
+    <br><br>
+
+    <label>Location</label><br>
+    <input
+        type="text"
+        name="location"
+        value="{{ job.location }}"
+        required
+    >
+    <br><br>
+
+    <label>Budget</label><br>
+    <input
+        type="number"
+        name="budget"
+        value="{{ job.budget }}"
+        required
+    >
+    <br><br>
+
+    <label>Workers Required</label><br>
+    <input
+        type="number"
+        name="workers_required"
+        value="{{ job.workers_required }}"
+        required
+    >
+    <br><br>
+
+    <button type="submit">
+        Update Job
+    </button>
+
+</form>
+
+<br>
+
+<a href="{{ url_for('customer.my_jobs') }}">
+    ← Back to My Jobs
+</a>
+
+</body>
+
+</html>

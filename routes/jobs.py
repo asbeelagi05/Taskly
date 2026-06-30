@@ -7,6 +7,9 @@ from models.job import Job
 jobs = Blueprint("jobs", __name__)
 
 
+# -----------------------------
+# Post Job
+# -----------------------------
 @jobs.route("/post-job", methods=["GET", "POST"])
 @login_required
 def post_job():
@@ -36,6 +39,9 @@ def post_job():
     return render_template("post_job.html")
 
 
+# -----------------------------
+# My Job Details
+# -----------------------------
 @jobs.route("/view-job/<int:job_id>")
 @login_required
 def view_job(job_id):
@@ -47,5 +53,35 @@ def view_job(job_id):
 
     return render_template(
         "view_job.html",
+        job=job
+    )
+
+
+# -----------------------------
+# Edit Job
+# -----------------------------
+@jobs.route("/edit-job/<int:job_id>", methods=["GET", "POST"])
+@login_required
+def edit_job(job_id):
+
+    job = Job.query.get_or_404(job_id)
+
+    if job.customer_id != current_user.id:
+        return "Access Denied", 403
+
+    if request.method == "POST":
+
+        job.title = request.form["title"]
+        job.description = request.form["description"]
+        job.location = request.form["location"]
+        job.budget = float(request.form["budget"])
+        job.workers_required = int(request.form["workers_required"])
+
+        db.session.commit()
+
+        return redirect(url_for("customer.my_jobs"))
+
+    return render_template(
+        "edit_job.html",
         job=job
     )
