@@ -34,3 +34,18 @@ def post_job():
         return redirect(url_for("customer.dashboard"))
 
     return render_template("post_job.html")
+
+
+@jobs.route("/view-job/<int:job_id>")
+@login_required
+def view_job(job_id):
+
+    job = Job.query.get_or_404(job_id)
+
+    if job.customer_id != current_user.id:
+        return "Access Denied", 403
+
+    return render_template(
+        "view_job.html",
+        job=job
+    )
