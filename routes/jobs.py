@@ -1,6 +1,8 @@
 from flask import Blueprint, render_template, request, redirect, url_for
 from flask_login import login_required, current_user
 
+print("Loaded jobs.py from:", __file__)
+
 from extensions import db
 from models.job import Job
 
@@ -16,18 +18,12 @@ def post_job():
 
     if request.method == "POST":
 
-        title = request.form["title"]
-        description = request.form["description"]
-        location = request.form["location"]
-        budget = float(request.form["budget"])
-        workers_required = int(request.form["workers_required"])
-
         job = Job(
-            title=title,
-            description=description,
-            location=location,
-            budget=budget,
-            workers_required=workers_required,
+            title=request.form["title"],
+            description=request.form["description"],
+            location=request.form["location"],
+            budget=float(request.form["budget"]),
+            workers_required=int(request.form["workers_required"]),
             customer_id=current_user.id
         )
 
@@ -40,7 +36,7 @@ def post_job():
 
 
 # -----------------------------
-# My Job Details
+# View Job
 # -----------------------------
 @jobs.route("/view-job/<int:job_id>")
 @login_required
@@ -51,10 +47,7 @@ def view_job(job_id):
     if job.customer_id != current_user.id:
         return "Access Denied", 403
 
-    return render_template(
-        "view_job.html",
-        job=job
-    )
+    return render_template("view_job.html", job=job)
 
 
 # -----------------------------
@@ -81,7 +74,26 @@ def edit_job(job_id):
 
         return redirect(url_for("customer.my_jobs"))
 
-    return render_template(
-        "edit_job.html",
-        job=job
-    )
+    return render_template("edit_job.html", job=job)
+
+
+# -----------------------------
+# Delete Job
+# -----------------------------
+@jobs.route("/delete-job/<int:job_id>", methods=["GET", "POST"])
+@login_required
+def delete_job(job_id):
+
+    job = Job.query.get_or_404(job_id)
+
+    if job.customer_id != current_user.id:
+        return "Access Denied", 403
+
+    if request.method == "POST":
+
+        db.session.delete(job)
+        db.session.commit()
+
+        return redirect(url_for("customer.my_jobs"))
+
+    return render_template("delete_job.html", job=job)
