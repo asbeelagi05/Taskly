@@ -20,7 +20,7 @@ def dashboard():
     ).count()
 
     return render_template(
-        "customer_dashboard.html",
+        "customer/dashboard.html",
         total_jobs=total_jobs,
         open_jobs=open_jobs
     )
@@ -35,6 +35,6 @@ def my_jobs():
     ).all()
 
     return render_template(
-        "my_jobs.html",
+        "customer/my_jobs.html",
         jobs=jobs
     )

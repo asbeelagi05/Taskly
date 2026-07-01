@@ -1,8 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for
 from flask_login import login_required, current_user
 
-print("Loaded jobs.py from:", __file__)
-
 from extensions import db
 from models.job import Job
 
@@ -32,7 +30,7 @@ def post_job():
 
         return redirect(url_for("customer.dashboard"))
 
-    return render_template("post_job.html")
+    return render_template("customer/post_job.html")
 
 
 # -----------------------------
@@ -47,7 +45,10 @@ def view_job(job_id):
     if job.customer_id != current_user.id:
         return "Access Denied", 403
 
-    return render_template("view_job.html", job=job)
+    return render_template(
+        "customer/view_job.html",
+        job=job
+    )
 
 
 # -----------------------------
@@ -74,7 +75,10 @@ def edit_job(job_id):
 
         return redirect(url_for("customer.my_jobs"))
 
-    return render_template("edit_job.html", job=job)
+    return render_template(
+        "customer/edit_job.html",
+        job=job
+    )
 
 
 # -----------------------------
@@ -96,4 +100,7 @@ def delete_job(job_id):
 
         return redirect(url_for("customer.my_jobs"))
 
-    return render_template("delete_job.html", job=job)
+    return render_template(
+        "customer/delete_job.html",
+        job=job
+    )
