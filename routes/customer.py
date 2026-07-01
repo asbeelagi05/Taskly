@@ -1,10 +1,11 @@
 from flask import Blueprint, render_template, request
 from flask_login import login_required, current_user
 from datetime import datetime
-
-from models.job import Job
-from extensions import db
 from sqlalchemy import func
+
+from extensions import db
+from models.job import Job
+from utils.auth_decorators import customer_required
 
 customer = Blueprint("customer", __name__)
 
@@ -14,6 +15,7 @@ customer = Blueprint("customer", __name__)
 # ---------------------------------
 @customer.route("/customer/dashboard")
 @login_required
+@customer_required
 def dashboard():
 
     hour = datetime.now().hour
@@ -72,6 +74,7 @@ def dashboard():
 # ---------------------------------
 @customer.route("/my-jobs")
 @login_required
+@customer_required
 def my_jobs():
 
     status = request.args.get("status")

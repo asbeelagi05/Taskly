@@ -4,6 +4,7 @@ from flask_login import login_required, current_user
 from extensions import db
 from models.job import Job
 from models.application import Application
+from utils.auth_decorators import customer_required
 
 jobs = Blueprint("jobs", __name__)
 
@@ -13,6 +14,7 @@ jobs = Blueprint("jobs", __name__)
 # --------------------------------------------------
 @jobs.route("/post-job", methods=["GET", "POST"])
 @login_required
+@customer_required
 def post_job():
 
     if request.method == "POST":
@@ -41,6 +43,7 @@ def post_job():
 # --------------------------------------------------
 @jobs.route("/view-job/<int:job_id>")
 @login_required
+@customer_required
 def view_job(job_id):
 
     job = Job.query.get_or_404(job_id)
@@ -59,6 +62,7 @@ def view_job(job_id):
 # --------------------------------------------------
 @jobs.route("/edit-job/<int:job_id>", methods=["GET", "POST"])
 @login_required
+@customer_required
 def edit_job(job_id):
 
     job = Job.query.get_or_404(job_id)
@@ -91,6 +95,7 @@ def edit_job(job_id):
 # --------------------------------------------------
 @jobs.route("/delete-job/<int:job_id>", methods=["GET", "POST"])
 @login_required
+@customer_required
 def delete_job(job_id):
 
     job = Job.query.get_or_404(job_id)
@@ -118,6 +123,7 @@ def delete_job(job_id):
 # --------------------------------------------------
 @jobs.route("/applicants/<int:job_id>")
 @login_required
+@customer_required
 def applicants(job_id):
 
     job = Job.query.get_or_404(job_id)
@@ -141,6 +147,7 @@ def applicants(job_id):
 # --------------------------------------------------
 @jobs.route("/accept/<int:application_id>")
 @login_required
+@customer_required
 def accept(application_id):
 
     application = Application.query.get_or_404(application_id)
@@ -151,6 +158,8 @@ def accept(application_id):
         return "Access Denied", 403
 
     application.status = "Accepted"
+
+    job.status = "In Progress"
 
     db.session.commit()
 
@@ -169,6 +178,7 @@ def accept(application_id):
 # --------------------------------------------------
 @jobs.route("/reject/<int:application_id>")
 @login_required
+@customer_required
 def reject(application_id):
 
     application = Application.query.get_or_404(application_id)
@@ -187,6 +197,33 @@ def reject(application_id):
     return redirect(
         url_for(
             "jobs.applicants",
+            job_id=job.id
+        )
+    )
+
+
+# --------------------------------------------------
+# Complete Job
+# --------------------------------------------------
+@jobs.route("/complete-job/<int:job_id>")
+@login_required
+@customer_required
+def complete_job(job_id):
+
+    job = Job.query.get_or_404(job_id)
+
+    if job.customer_id != current_user.id:
+        return "Access Denied", 403
+
+    job.status = "Completed"
+
+    db.session.commit()
+
+    flash("Job marked as completed!", "success")
+
+    return redirect(
+        url_for(
+            "jobs.view_job",
             job_id=job.id
         )
     )

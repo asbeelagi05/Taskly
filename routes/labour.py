@@ -4,6 +4,7 @@ from flask_login import login_required, current_user
 from extensions import db
 from models.job import Job
 from models.application import Application
+from utils.auth_decorators import labour_required
 
 labour = Blueprint("labour", __name__)
 
@@ -13,6 +14,7 @@ labour = Blueprint("labour", __name__)
 # ---------------------------------
 @labour.route("/labour/dashboard")
 @login_required
+@labour_required
 def dashboard():
 
     jobs = (
@@ -34,6 +36,7 @@ def dashboard():
 # ---------------------------------
 @labour.route("/available-jobs")
 @login_required
+@labour_required
 def available_jobs():
 
     jobs = (
@@ -54,6 +57,7 @@ def available_jobs():
 # ---------------------------------
 @labour.route("/labour/job/<int:job_id>")
 @login_required
+@labour_required
 def view_job(job_id):
 
     job = Job.query.get_or_404(job_id)
@@ -75,6 +79,7 @@ def view_job(job_id):
 # ---------------------------------
 @labour.route("/apply/<int:job_id>")
 @login_required
+@labour_required
 def apply(job_id):
 
     job = Job.query.get_or_404(job_id)
@@ -115,6 +120,7 @@ def apply(job_id):
 # ---------------------------------
 @labour.route("/my-applications")
 @login_required
+@labour_required
 def my_applications():
 
     applications = (
