@@ -1,32 +1,27 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Customer Dashboard</title>
-</head>
+body{
+    font-family: 'Segoe UI', sans-serif;
+}
 
-<body>
+.card{
+    border:none;
+    border-radius:15px;
+}
 
-<h1>Customer Dashboard</h1>
+.btn{
+    border-radius:10px;
+}
 
-<h2>Welcome {{ current_user.name }}</h2>
+input,
+textarea,
+select{
+    border-radius:10px !important;
+}
 
-<hr>
+.navbar-brand{
+    font-size:1.4rem;
+    font-weight:700;
+}
 
-<h3>Total Jobs : {{ total_jobs }}</h3>
-
-<h3>Open Jobs : {{ open_jobs }}</h3>
-
-<hr>
-
-<a href="/post-job">➕ Post Job</a>
-
-<br><br>
-
-<a href="/my-jobs">📂 My Jobs</a>
-
-<br><br>
-
-<a href="/logout">🚪 Logout</a>
-
-</body>
-</html>
+.shadow-card{
+    box-shadow:0 10px 25px rgba(0,0,0,.08);
+}
