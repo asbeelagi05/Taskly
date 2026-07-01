@@ -10,6 +10,7 @@ from routes.jobs import jobs
 
 from models.user import User
 from models.job import Job
+from models.application import Application
 
 app = Flask(__name__)
 app.config.from_object(Config)

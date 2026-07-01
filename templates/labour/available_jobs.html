@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2 class="fw-bold mb-4">
+
+Available Jobs
+
+</h2>
+
+<div class="row">
+
+{% for job in jobs %}
+
+<div class="col-lg-4 mb-4">
+
+<div class="card shadow-sm border-0 rounded-4 h-100">
+
+<div class="card-body">
+
+<h5 class="fw-bold">
+
+{{ job.title }}
+
+</h5>
+
+<p class="text-muted">
+
+<i class="bi bi-geo-alt-fill"></i>
+
+{{ job.location }}
+
+</p>
+
+<hr>
+
+<p>
+
+<strong>Budget</strong>
+
+<br>
+
+₹{{ "{:,.0f}".format(job.budget) }}
+
+</p>
+
+<p>
+
+<strong>Workers Required</strong>
+
+<br>
+
+{{ job.workers_required }}
+
+</p>
+
+<div class="d-grid gap-2">
+
+<a
+href="/labour/job/{{ job.id }}"
+class="btn btn-primary">
+
+View Job
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+{% endblock %}

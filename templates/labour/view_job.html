@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+
+<div class="col-lg-8">
+
+<div class="card shadow-sm border-0 rounded-4">
+
+<div class="card-body p-5">
+
+<h2 class="fw-bold">
+
+{{ job.title }}
+
+</h2>
+
+<p class="text-muted">
+
+<i class="bi bi-geo-alt-fill"></i>
+
+{{ job.location }}
+
+</p>
+
+<hr>
+
+<div class="row text-center mb-4">
+
+<div class="col">
+
+<h6>Budget</h6>
+
+<h4>
+
+₹{{ "{:,.0f}".format(job.budget) }}
+
+</h4>
+
+</div>
+
+<div class="col">
+
+<h6>Workers</h6>
+
+<h4>
+
+{{ job.workers_required }}
+
+</h4>
+
+</div>
+
+</div>
+
+<h5>
+
+Description
+
+</h5>
+
+<div class="bg-light rounded-4 p-4 mb-4">
+
+{{ job.description }}
+
+</div>
+
+{% if already_applied %}
+
+<button
+class="btn btn-success btn-lg w-100"
+disabled>
+
+Already Applied
+
+</button>
+
+{% else %}
+
+<a
+href="/apply/{{ job.id }}"
+class="btn btn-primary btn-lg w-100">
+
+Apply Now
+
+</a>
+
+{% endif %}
+
+<br><br>
+
+<a
+href="/available-jobs"
+class="btn btn-outline-secondary w-100">
+
+Back
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+{% endblock %}

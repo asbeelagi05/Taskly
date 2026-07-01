@@ -1,5 +1,5 @@
-from flask import Blueprint, render_template, request, redirect, url_for
-from flask_login import login_user
+from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask_login import login_user, logout_user, login_required
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from extensions import db
@@ -75,3 +75,15 @@ def login():
         return "Invalid Email or Password"
 
     return render_template("auth/login.html")
+# ----------------------------
+# Logout
+# ----------------------------
+@auth.route("/logout")
+@login_required
+def logout():
+
+    logout_user()
+
+    flash("Logged out successfully.", "success")
+
+    return redirect(url_for("auth.login"))

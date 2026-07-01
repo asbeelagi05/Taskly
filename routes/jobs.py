@@ -3,13 +3,14 @@ from flask_login import login_required, current_user
 
 from extensions import db
 from models.job import Job
+from models.application import Application
 
 jobs = Blueprint("jobs", __name__)
 
 
-# -----------------------------
+# --------------------------------------------------
 # Post Job
-# -----------------------------
+# --------------------------------------------------
 @jobs.route("/post-job", methods=["GET", "POST"])
 @login_required
 def post_job():
@@ -28,14 +29,16 @@ def post_job():
         db.session.add(job)
         db.session.commit()
 
+        flash("Job posted successfully!", "success")
+
         return redirect(url_for("customer.dashboard"))
 
     return render_template("customer/post_job.html")
 
 
-# -----------------------------
+# --------------------------------------------------
 # View Job
-# -----------------------------
+# --------------------------------------------------
 @jobs.route("/view-job/<int:job_id>")
 @login_required
 def view_job(job_id):
@@ -51,9 +54,9 @@ def view_job(job_id):
     )
 
 
-# -----------------------------
+# --------------------------------------------------
 # Edit Job
-# -----------------------------
+# --------------------------------------------------
 @jobs.route("/edit-job/<int:job_id>", methods=["GET", "POST"])
 @login_required
 def edit_job(job_id):
@@ -73,6 +76,8 @@ def edit_job(job_id):
 
         db.session.commit()
 
+        flash("Job updated successfully!", "success")
+
         return redirect(url_for("customer.my_jobs"))
 
     return render_template(
@@ -81,9 +86,9 @@ def edit_job(job_id):
     )
 
 
-# -----------------------------
+# --------------------------------------------------
 # Delete Job
-# -----------------------------
+# --------------------------------------------------
 @jobs.route("/delete-job/<int:job_id>", methods=["GET", "POST"])
 @login_required
 def delete_job(job_id):
@@ -98,9 +103,90 @@ def delete_job(job_id):
         db.session.delete(job)
         db.session.commit()
 
+        flash("Job deleted successfully!", "danger")
+
         return redirect(url_for("customer.my_jobs"))
 
     return render_template(
         "customer/delete_job.html",
         job=job
+    )
+
+
+# --------------------------------------------------
+# View Applicants
+# --------------------------------------------------
+@jobs.route("/applicants/<int:job_id>")
+@login_required
+def applicants(job_id):
+
+    job = Job.query.get_or_404(job_id)
+
+    if job.customer_id != current_user.id:
+        return "Access Denied", 403
+
+    applications = Application.query.filter_by(
+        job_id=job.id
+    ).all()
+
+    return render_template(
+        "customer/applicants.html",
+        job=job,
+        applications=applications
+    )
+
+
+# --------------------------------------------------
+# Accept Applicant
+# --------------------------------------------------
+@jobs.route("/accept/<int:application_id>")
+@login_required
+def accept(application_id):
+
+    application = Application.query.get_or_404(application_id)
+
+    job = Job.query.get_or_404(application.job_id)
+
+    if job.customer_id != current_user.id:
+        return "Access Denied", 403
+
+    application.status = "Accepted"
+
+    db.session.commit()
+
+    flash("Applicant accepted successfully!", "success")
+
+    return redirect(
+        url_for(
+            "jobs.applicants",
+            job_id=job.id
+        )
+    )
+
+
+# --------------------------------------------------
+# Reject Applicant
+# --------------------------------------------------
+@jobs.route("/reject/<int:application_id>")
+@login_required
+def reject(application_id):
+
+    application = Application.query.get_or_404(application_id)
+
+    job = Job.query.get_or_404(application.job_id)
+
+    if job.customer_id != current_user.id:
+        return "Access Denied", 403
+
+    application.status = "Rejected"
+
+    db.session.commit()
+
+    flash("Applicant rejected.", "warning")
+
+    return redirect(
+        url_for(
+            "jobs.applicants",
+            job_id=job.id
+        )
     )
