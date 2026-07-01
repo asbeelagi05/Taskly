@@ -1,54 +1,291 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
 
-<head>
-    <title>My Jobs</title>
-</head>
+{% block content %}
 
-<body>
+<div class="d-flex justify-content-between align-items-center mb-4">
 
-<h1>My Posted Jobs</h1>
+    <div>
+
+        <h2 class="fw-bold">My Jobs</h2>
+
+        <p class="text-muted mb-0">
+            Showing {{ job_count }} Job{{ '' if job_count == 1 else 's' }}
+        </p>
+
+    </div>
+
+    <a href="/post-job" class="btn btn-primary">
+
+        <i class="bi bi-plus-circle-fill"></i>
+
+        Post New Job
+
+    </a>
+
+</div>
+
+
+<!-- Search -->
+
+<form method="GET" action="/my-jobs">
+
+<div class="row mb-4">
+
+    <div class="col-md-8">
+
+        <input
+            type="text"
+            class="form-control"
+            name="search"
+            placeholder="Search jobs..."
+            value="{{ search }}"
+        >
+
+    </div>
+
+    <div class="col-md-3 mt-3 mt-md-0">
+
+        <select
+            class="form-select"
+            name="status">
+
+            <option {% if selected_status=="All" %}selected{% endif %}>
+                All
+            </option>
+
+            <option {% if selected_status=="Open" %}selected{% endif %}>
+                Open
+            </option>
+
+            <option {% if selected_status=="Completed" %}selected{% endif %}>
+                Completed
+            </option>
+
+        </select>
+
+    </div>
+
+    <div class="col-md-1 mt-3 mt-md-0">
+
+        <button class="btn btn-primary w-100">
+
+            <i class="bi bi-search"></i>
+
+        </button>
+
+    </div>
+
+</div>
+
+</form>
+
 
 {% if jobs %}
 
-    {% for job in jobs %}
+{% for job in jobs %}
+
+<div class="card shadow-sm border-0 rounded-4 mb-4">
+
+    <div class="card-body p-4">
+
+        <div class="d-flex justify-content-between align-items-start">
+
+            <div>
+
+                <h4 class="fw-bold">
+
+                    {{ job.title }}
+
+                </h4>
+
+                <p class="text-muted mb-0">
+
+                    <i class="bi bi-geo-alt-fill"></i>
+
+                    {{ job.location }}
+
+                </p>
+
+            </div>
+
+            <div>
+
+                {% if job.status=="Open" %}
+
+                    <span class="badge bg-success">
+
+                        {{ job.status }}
+
+                    </span>
+
+                {% elif job.status=="Completed" %}
+
+                    <span class="badge bg-primary">
+
+                        {{ job.status }}
+
+                    </span>
+
+                {% else %}
+
+                    <span class="badge bg-warning text-dark">
+
+                        {{ job.status }}
+
+                    </span>
+
+                {% endif %}
+
+            </div>
+
+        </div>
 
         <hr>
 
-        <h2>{{ job.title }}</h2>
+        <div class="row text-center">
 
-        <p>{{ job.description }}</p>
+            <div class="col-md-4">
 
-        <p>📍 {{ job.location }}</p>
+                <i class="bi bi-cash-stack fs-3 text-success"></i>
 
-        <p>💰 ₹{{ job.budget }}</p>
+                <h6 class="mt-2">
 
-        <p>👷 {{ job.workers_required }} Workers</p>
+                    Budget
 
-        <p>Status : {{ job.status }}</p>
+                </h6>
 
-        <a href="/view-job/{{ job.id }}">View</a> |
+                <strong>
 
-        <a href="/edit-job/{{ job.id }}">Edit</a> |
+                    ₹{{ "{:,.0f}".format(job.budget) }}
 
-        <a href="/delete-job/{{ job.id }}">Delete</a> |
+                </strong>
 
-        <a href="#">Applicants</a>
+            </div>
+
+            <div class="col-md-4">
+
+                <i class="bi bi-people-fill fs-3 text-primary"></i>
+
+                <h6 class="mt-2">
+
+                    Workers
+
+                </h6>
+
+                <strong>
+
+                    {{ job.workers_required }}
+
+                </strong>
+
+            </div>
+
+            <div class="col-md-4">
+
+                <i class="bi bi-calendar-event fs-3 text-secondary"></i>
+
+                <h6 class="mt-2">
+
+                    Posted
+
+                </h6>
+
+                <strong>
+
+                    {{ job.created_at.strftime("%d %b %Y") }}
+
+                </strong>
+
+            </div>
+
+        </div>
 
         <hr>
 
-    {% endfor %}
+        <div class="d-flex flex-wrap gap-2">
+
+            <a
+                href="/view-job/{{ job.id }}"
+                class="btn btn-outline-primary">
+
+                <i class="bi bi-eye-fill"></i>
+
+                View
+
+            </a>
+
+            <a
+                href="/edit-job/{{ job.id }}"
+                class="btn btn-outline-warning">
+
+                <i class="bi bi-pencil-fill"></i>
+
+                Edit
+
+            </a>
+
+            <a
+                href="/delete-job/{{ job.id }}"
+                class="btn btn-outline-danger">
+
+                <i class="bi bi-trash-fill"></i>
+
+                Delete
+
+            </a>
+
+            <a
+                href="#"
+                class="btn btn-outline-success">
+
+                <i class="bi bi-person-lines-fill"></i>
+
+                Applicants
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endfor %}
 
 {% else %}
 
-<h2>No jobs posted.</h2>
+<div class="card border-0 shadow-sm rounded-4">
+
+    <div class="card-body text-center py-5">
+
+        <i class="bi bi-briefcase display-1 text-secondary"></i>
+
+        <h3 class="mt-4">
+
+            No Jobs Found
+
+        </h3>
+
+        <p class="text-muted">
+
+            Start by posting your first job.
+
+        </p>
+
+        <a
+            href="/post-job"
+            class="btn btn-primary">
+
+            <i class="bi bi-plus-circle-fill"></i>
+
+            Post First Job
+
+        </a>
+
+    </div>
+
+</div>
 
 {% endif %}
 
-<br>
-
-<a href="/customer/dashboard">Back to Dashboard</a>
-
-</body>
-
-</html>
+{% endblock %}

@@ -1,27 +1,298 @@
-body{
-    font-family: 'Segoe UI', sans-serif;
-}
+{% extends "base.html" %}
 
-.card{
-    border:none;
-    border-radius:15px;
-}
+{% block content %}
 
-.btn{
-    border-radius:10px;
-}
+<div class="row align-items-center mb-5">
 
-input,
-textarea,
-select{
-    border-radius:10px !important;
-}
+    <div class="col-lg-8">
 
-.navbar-brand{
-    font-size:1.4rem;
-    font-weight:700;
-}
+        <h2 class="page-title">
+            {{ greeting }}, {{ current_user.name }} 👋
+        </h2>
 
-.shadow-card{
-    box-shadow:0 10px 25px rgba(0,0,0,.08);
-}
+        <p class="text-muted">
+            Welcome back to Taskly. Manage your jobs, hire skilled workers, and track ongoing work from one dashboard.
+        </p>
+
+    </div>
+
+    <div class="col-lg-4 text-lg-end">
+
+        <a href="/post-job" class="btn btn-primary btn-lg">
+            <i class="bi bi-plus-circle-fill"></i>
+            Post New Job
+        </a>
+
+    </div>
+
+</div>
+
+
+<div class="row g-4">
+
+    <div class="col-md-4">
+
+        <div class="card shadow-soft stat-card">
+
+            <i class="bi bi-briefcase-fill text-primary"></i>
+
+            <h2 class="fw-bold mt-3">
+
+                {{ total_jobs }}
+
+            </h2>
+
+            <p class="text-muted mb-0">
+
+                Total Jobs
+
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="col-md-4">
+
+        <div class="card shadow-soft stat-card">
+
+            <i class="bi bi-hourglass-split text-warning"></i>
+
+            <h2 class="fw-bold mt-3">
+
+                {{ open_jobs }}
+
+            </h2>
+
+            <p class="text-muted mb-0">
+
+                Active Jobs
+
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="col-md-4">
+
+        <div class="card shadow-soft stat-card">
+
+            <i class="bi bi-check-circle-fill text-success"></i>
+
+            <h2 class="fw-bold mt-3">
+
+                {{ completed_jobs }}
+
+            </h2>
+
+            <p class="text-muted mb-0">
+
+                Completed Jobs
+
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="row mt-5">
+
+    <div class="col-lg-8">
+
+        <div class="card shadow-soft p-4">
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+
+                <h4 class="fw-bold mb-0">
+
+                    Recent Jobs
+
+                </h4>
+
+                <a href="/my-jobs" class="btn btn-outline-primary">
+
+                    View All
+
+                </a>
+
+            </div>
+
+
+            {% if recent_jobs %}
+
+                {% for job in recent_jobs %}
+
+                <div class="card job-card mb-3">
+
+                    <div class="card-body">
+
+                        <div class="d-flex justify-content-between align-items-center">
+
+                            <div>
+
+                                <h5 class="fw-bold">
+
+                                    {{ job.title }}
+
+                                </h5>
+
+                                <small class="text-muted">
+
+                                    <i class="bi bi-geo-alt-fill"></i>
+
+                                    {{ job.location }}
+
+                                </small>
+
+                            </div>
+
+                            <div>
+
+                                {% if job.status == "Open" %}
+
+                                <span class="badge bg-success">
+
+                                    {{ job.status }}
+
+                                </span>
+
+                                {% elif job.status == "Completed" %}
+
+                                <span class="badge bg-primary">
+
+                                    {{ job.status }}
+
+                                </span>
+
+                                {% else %}
+
+                                <span class="badge bg-warning text-dark">
+
+                                    {{ job.status }}
+
+                                </span>
+
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+                        <hr>
+
+                        <div class="row">
+
+                            <div class="col-md-4">
+
+                                <strong>Budget</strong>
+
+                                <br>
+
+                                ₹{{ job.budget }}
+
+                            </div>
+
+                            <div class="col-md-4">
+
+                                <strong>Workers</strong>
+
+                                <br>
+
+                                {{ job.workers_required }}
+
+                            </div>
+
+                            <div class="col-md-4 text-md-end mt-3 mt-md-0">
+
+                                <a href="/view-job/{{ job.id }}" class="btn btn-outline-primary btn-sm">
+
+                                    View
+
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                {% endfor %}
+
+            {% else %}
+
+                <div class="text-center py-5">
+
+                    <i class="bi bi-inbox display-1 text-secondary"></i>
+
+                    <h4 class="mt-4">
+
+                        No Jobs Posted Yet
+
+                    </h4>
+
+                    <p class="text-muted">
+
+                        Click "Post New Job" to create your first labour requirement.
+
+                    </p>
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+
+    <div class="col-lg-4">
+
+        <div class="card shadow-soft p-4">
+
+            <h4 class="fw-bold">
+
+                Quick Actions
+
+            </h4>
+
+            <hr>
+
+            <a href="/post-job" class="btn btn-primary w-100 mb-3">
+
+                <i class="bi bi-plus-circle-fill"></i>
+
+                Post New Job
+
+            </a>
+
+            <a href="/my-jobs" class="btn btn-outline-primary w-100 mb-3">
+
+                <i class="bi bi-folder-fill"></i>
+
+                My Jobs
+
+            </a>
+
+            <a href="#" class="btn btn-outline-dark w-100">
+
+                <i class="bi bi-person-circle"></i>
+
+                Profile
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

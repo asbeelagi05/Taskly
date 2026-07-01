@@ -1,28 +1,187 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>View Job</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-<h1>{{ job.title }}</h1>
+{% block content %}
 
-<hr>
+<div class="row justify-content-center">
 
-<p><strong>Description:</strong></p>
-<p>{{ job.description }}</p>
+    <div class="col-lg-10">
 
-<p><strong>Location:</strong> {{ job.location }}</p>
+        <div class="card border-0 shadow-sm rounded-4">
 
-<p><strong>Budget:</strong> ₹{{ job.budget }}</p>
+            <div class="card-body p-5">
 
-<p><strong>Workers Required:</strong> {{ job.workers_required }}</p>
+                <div class="d-flex justify-content-between align-items-start mb-4">
 
-<p><strong>Status:</strong> {{ job.status }}</p>
+                    <div>
 
-<hr>
+                        <h2 class="fw-bold">
 
-<a href="/my-jobs">← Back to My Jobs</a>
+                            {{ job.title }}
 
-</body>
-</html>
+                        </h2>
+
+                        <p class="text-muted">
+
+                            <i class="bi bi-geo-alt-fill"></i>
+
+                            {{ job.location }}
+
+                        </p>
+
+                    </div>
+
+                    <div>
+
+                        {% if job.status=="Open" %}
+
+                        <span class="badge bg-success fs-6">
+
+                            {{ job.status }}
+
+                        </span>
+
+                        {% elif job.status=="Completed" %}
+
+                        <span class="badge bg-primary fs-6">
+
+                            {{ job.status }}
+
+                        </span>
+
+                        {% else %}
+
+                        <span class="badge bg-warning text-dark fs-6">
+
+                            {{ job.status }}
+
+                        </span>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+                <hr>
+
+                <div class="row text-center mb-5">
+
+                    <div class="col-md-4">
+
+                        <i class="bi bi-cash-stack display-6 text-success"></i>
+
+                        <h5 class="mt-2">
+
+                            Budget
+
+                        </h5>
+
+                        <h4>
+
+                            ₹{{ "{:,.0f}".format(job.budget) }}
+
+                        </h4>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <i class="bi bi-people-fill display-6 text-primary"></i>
+
+                        <h5 class="mt-2">
+
+                            Workers Required
+
+                        </h5>
+
+                        <h4>
+
+                            {{ job.workers_required }}
+
+                        </h4>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <i class="bi bi-calendar-check display-6 text-secondary"></i>
+
+                        <h5 class="mt-2">
+
+                            Posted On
+
+                        </h5>
+
+                        <h6>
+
+                            {{ job.created_at.strftime("%d %B %Y") }}
+
+                        </h6>
+
+                    </div>
+
+                </div>
+
+                <h4 class="fw-bold">
+
+                    Job Description
+
+                </h4>
+
+                <div class="bg-light rounded-4 p-4 mb-5">
+
+                    {{ job.description }}
+
+                </div>
+
+                <div class="d-flex flex-wrap gap-3">
+
+                    <a
+                        href="/edit-job/{{ job.id }}"
+                        class="btn btn-warning">
+
+                        <i class="bi bi-pencil-fill"></i>
+
+                        Edit
+
+                    </a>
+
+                    <a
+                        href="/delete-job/{{ job.id }}"
+                        class="btn btn-danger">
+
+                        <i class="bi bi-trash-fill"></i>
+
+                        Delete
+
+                    </a>
+
+                    <a
+                        href="/my-jobs"
+                        class="btn btn-outline-secondary">
+
+                        Back
+
+                    </a>
+
+                    <a
+                        href="#"
+                        class="btn btn-success">
+
+                        <i class="bi bi-people-fill"></i>
+
+                        Applicants
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

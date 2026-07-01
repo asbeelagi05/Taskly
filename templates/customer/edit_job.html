@@ -1,71 +1,144 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
 
-<head>
-    <title>Edit Job</title>
-</head>
+{% block content %}
 
-<body>
+<div class="row justify-content-center">
 
-<h1>Edit Job</h1>
+    <div class="col-lg-8">
 
-<form method="POST">
+        <div class="card shadow-sm border-0 rounded-4">
 
-    <label>Job Title</label><br>
-    <input
-        type="text"
-        name="title"
-        value="{{ job.title }}"
-        required
-    >
-    <br><br>
+            <div class="card-body p-5">
 
-    <label>Description</label><br>
-    <textarea
-        name="description"
-        required
-    >{{ job.description }}</textarea>
-    <br><br>
+                <div class="text-center mb-5">
 
-    <label>Location</label><br>
-    <input
-        type="text"
-        name="location"
-        value="{{ job.location }}"
-        required
-    >
-    <br><br>
+                    <i class="bi bi-pencil-square display-3 text-warning"></i>
 
-    <label>Budget</label><br>
-    <input
-        type="number"
-        name="budget"
-        value="{{ job.budget }}"
-        required
-    >
-    <br><br>
+                    <h2 class="fw-bold mt-3">
 
-    <label>Workers Required</label><br>
-    <input
-        type="number"
-        name="workers_required"
-        value="{{ job.workers_required }}"
-        required
-    >
-    <br><br>
+                        Edit Job
 
-    <button type="submit">
-        Update Job
-    </button>
+                    </h2>
 
-</form>
+                    <p class="text-muted">
 
-<br>
+                        Update your job details.
 
-<a href="{{ url_for('customer.my_jobs') }}">
-    ← Back to My Jobs
-</a>
+                    </p>
 
-</body>
+                </div>
 
-</html>
+                <form method="POST">
+
+                    <div class="mb-4">
+
+                        <label class="form-label fw-semibold">
+                            Job Title
+                        </label>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            name="title"
+                            value="{{ job.title }}"
+                            required>
+
+                    </div>
+
+                    <div class="mb-4">
+
+                        <label class="form-label fw-semibold">
+                            Description
+                        </label>
+
+                        <textarea
+                            class="form-control"
+                            rows="5"
+                            name="description"
+                            required>{{ job.description }}</textarea>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-4">
+
+                            <label class="form-label fw-semibold">
+                                Location
+                            </label>
+
+                            <input
+                                type="text"
+                                class="form-control"
+                                name="location"
+                                value="{{ job.location }}"
+                                required>
+
+                        </div>
+
+                        <div class="col-md-6 mb-4">
+
+                            <label class="form-label fw-semibold">
+                                Budget (₹)
+                            </label>
+
+                            <input
+                                type="number"
+                                class="form-control"
+                                name="budget"
+                                value="{{ job.budget }}"
+                                required>
+
+                        </div>
+
+                    </div>
+
+                    <div class="mb-4">
+
+                        <label class="form-label fw-semibold">
+                            Workers Required
+                        </label>
+
+                        <input
+                            type="number"
+                            class="form-control"
+                            name="workers_required"
+                            value="{{ job.workers_required }}"
+                            min="1"
+                            required>
+
+                    </div>
+
+                    <div class="d-grid gap-2">
+
+                        <button
+                            type="submit"
+                            class="btn btn-warning btn-lg">
+
+                            <i class="bi bi-check-circle-fill"></i>
+
+                            Update Job
+
+                        </button>
+
+                        <a
+                            href="/view-job/{{ job.id }}"
+                            class="btn btn-outline-secondary">
+
+                            Cancel
+
+                        </a>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

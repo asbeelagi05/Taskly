@@ -1,0 +1,97 @@
+:root{
+
+    --primary:#2563EB;
+    --success:#22C55E;
+    --danger:#EF4444;
+    --warning:#F59E0B;
+    --background:#F8FAFC;
+    --card:#FFFFFF;
+    --text:#111827;
+
+}
+
+body{
+
+    font-family:'Inter',sans-serif;
+    background:var(--background);
+    color:var(--text);
+
+}
+
+.navbar{
+
+    border-bottom:1px solid #e5e7eb;
+
+}
+
+.card{
+
+    border:none;
+    border-radius:20px;
+    background:var(--card);
+    transition:.25s;
+
+}
+
+.card:hover{
+
+    transform:translateY(-4px);
+
+    box-shadow:0 15px 40px rgba(0,0,0,.08);
+
+}
+
+.btn{
+
+    border-radius:12px;
+    padding:10px 20px;
+    font-weight:600;
+
+}
+
+.form-control,
+.form-select,
+textarea{
+
+    border-radius:12px;
+    min-height:50px;
+
+}
+
+.shadow-soft{
+
+    box-shadow:0 12px 35px rgba(0,0,0,.08);
+
+}
+
+.page-title{
+
+    font-weight:700;
+
+}
+
+.stat-card{
+
+    padding:30px;
+    text-align:center;
+
+}
+
+.stat-card i{
+
+    font-size:42px;
+    margin-bottom:15px;
+
+}
+
+.job-card{
+
+    border-left:6px solid var(--primary);
+
+}
+
+.badge{
+
+    font-size:.85rem;
+
+}
