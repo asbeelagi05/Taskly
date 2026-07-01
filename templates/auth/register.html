@@ -1,38 +1,157 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Register - Taskly</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-    <h2>Taskly Registration</h2>
+{% block content %}
 
-    <form method="POST">
+<div class="row justify-content-center">
 
-        <label>Name</label><br>
-        <input type="text" name="name" required><br><br>
+    <div class="col-lg-6">
 
-        <label>Email</label><br>
-        <input type="email" name="email" required><br><br>
+        <div class="card shadow-sm border-0 rounded-4">
 
-        <label>Phone</label><br>
-        <input type="text" name="phone" required><br><br>
+            <div class="card-body p-5">
 
-        <label>Password</label><br>
-        <input type="password" name="password" required><br><br>
+                <div class="text-center mb-4">
 
-        <label>Role</label><br>
+                    <i class="bi bi-person-plus-fill display-3 text-primary"></i>
 
-        <select name="role">
-            <option value="customer">Customer</option>
-            <option value="labour">Labour</option>
-        </select>
+                    <h2 class="fw-bold mt-3">
 
-        <br><br>
+                        Create Account
 
-        <button type="submit">Register</button>
+                    </h2>
 
-    </form>
+                    <p class="text-muted">
 
-</body>
-</html>
+                        Join Taskly today
+
+                    </p>
+
+                </div>
+
+                <form method="POST">
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+
+                            Full Name
+
+                        </label>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            name="name"
+                            required>
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+
+                            Email
+
+                        </label>
+
+                        <input
+                            type="email"
+                            class="form-control"
+                            name="email"
+                            required>
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+
+                            Phone
+
+                        </label>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            name="phone"
+                            required>
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+
+                            Password
+
+                        </label>
+
+                        <input
+                            type="password"
+                            class="form-control"
+                            name="password"
+                            required>
+
+                    </div>
+
+                    <div class="mb-4">
+
+                        <label class="form-label">
+
+                            Register As
+
+                        </label>
+
+                        <select
+                            class="form-select"
+                            name="role">
+
+                            <option value="customer">
+
+                                Customer
+
+                            </option>
+
+                            <option value="labour">
+
+                                Labour
+
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary w-100">
+
+                        Create Account
+
+                    </button>
+
+                </form>
+
+                <hr>
+
+                <div class="text-center">
+
+                    Already have an account?
+
+                    <a href="/login">
+
+                        Login
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
