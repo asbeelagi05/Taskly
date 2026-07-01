@@ -7,6 +7,7 @@ from routes.auth import auth
 from routes.customer import customer
 from routes.labour import labour
 from routes.jobs import jobs
+from routes.profile import profile
 
 from models.user import User
 from models.job import Job
@@ -22,6 +23,7 @@ app.register_blueprint(auth)
 app.register_blueprint(customer)
 app.register_blueprint(labour)
 app.register_blueprint(jobs)
+app.register_blueprint(profile)
 
 with app.app_context():
     db.create_all()

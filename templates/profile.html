@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+
+<div class="col-lg-8">
+
+<div class="card shadow-sm border-0 rounded-4">
+
+<div class="card-body p-5">
+
+<div class="text-center mb-5">
+
+<i class="bi bi-person-circle display-1 text-primary"></i>
+
+<h2 class="fw-bold mt-3">
+
+{{ current_user.name }}
+
+</h2>
+
+<p class="text-muted">
+
+{{ current_user.role.title() }}
+
+</p>
+
+</div>
+
+<div class="row">
+
+<div class="col-md-6 mb-3">
+
+<label class="fw-bold">
+
+Email
+
+</label>
+
+<p>
+
+{{ current_user.email }}
+
+</p>
+
+</div>
+
+<div class="col-md-6 mb-3">
+
+<label class="fw-bold">
+
+Phone
+
+</label>
+
+<p>
+
+{{ current_user.phone }}
+
+</p>
+
+</div>
+
+</div>
+
+<hr>
+
+{% if current_user.role=="customer" %}
+
+<div class="row text-center">
+
+<div class="col">
+
+<h3>
+
+{{ stats.total_jobs }}
+
+</h3>
+
+<p>Total Jobs</p>
+
+</div>
+
+<div class="col">
+
+<h3>
+
+{{ stats.open_jobs }}
+
+</h3>
+
+<p>Open Jobs</p>
+
+</div>
+
+</div>
+
+{% else %}
+
+<div class="row text-center">
+
+<div class="col">
+
+<h3>
+
+{{ stats.applications }}
+
+</h3>
+
+<p>Applications</p>
+
+</div>
+
+<div class="col">
+
+<h3>
+
+{{ stats.accepted }}
+
+</h3>
+
+<p>Accepted Jobs</p>
+
+</div>
+
+</div>
+
+{% endif %}
+
+<hr>
+
+<a
+href="/profile/edit"
+class="btn btn-primary">
+
+<i class="bi bi-pencil-fill"></i>
+
+Edit Profile
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+{% endblock %}
