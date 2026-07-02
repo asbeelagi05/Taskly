@@ -1,108 +1,196 @@
-{% extends "base.html" %}
+\{% extends "base.html" %}
 
 {% block content %}
 
 <div class="row justify-content-center">
 
-<div class="col-lg-8">
+    <div class="col-lg-8">
 
-<div class="card shadow-sm border-0 rounded-4">
+        <div class="card shadow-sm border-0 rounded-4">
 
-<div class="card-body p-5">
+            <div class="card-body p-5">
 
-<h2 class="fw-bold">
+                <div class="d-flex justify-content-between align-items-start mb-4">
 
-{{ job.title }}
+                    <div>
 
-</h2>
+                        <h2 class="fw-bold">
 
-<p class="text-muted">
+                            {{ job.title }}
 
-<i class="bi bi-geo-alt-fill"></i>
+                        </h2>
 
-{{ job.location }}
+                        <p class="text-muted">
 
-</p>
+                            <i class="bi bi-geo-alt-fill"></i>
 
-<hr>
+                            {{ job.location }}
 
-<div class="row text-center mb-4">
+                        </p>
 
-<div class="col">
+                    </div>
 
-<h6>Budget</h6>
+                    <div>
 
-<h4>
+                        {% if job.status=="Open" %}
 
-₹{{ "{:,.0f}".format(job.budget) }}
+                        <span class="badge bg-success fs-6">
 
-</h4>
+                            {{ job.status }}
 
-</div>
+                        </span>
 
-<div class="col">
+                        {% elif job.status=="In Progress" %}
 
-<h6>Workers</h6>
+                        <span class="badge bg-warning text-dark fs-6">
 
-<h4>
+                            {{ job.status }}
 
-{{ job.workers_required }}
+                        </span>
 
-</h4>
+                        {% elif job.status=="Completed" %}
 
-</div>
+                        <span class="badge bg-primary fs-6">
 
-</div>
+                            {{ job.status }}
 
-<h5>
+                        </span>
 
-Description
+                        {% else %}
 
-</h5>
+                        <span class="badge bg-secondary fs-6">
 
-<div class="bg-light rounded-4 p-4 mb-4">
+                            {{ job.status }}
 
-{{ job.description }}
+                        </span>
 
-</div>
+                        {% endif %}
 
-{% if already_applied %}
+                    </div>
 
-<button
-class="btn btn-success btn-lg w-100"
-disabled>
+                </div>
 
-Already Applied
+                <hr>
 
-</button>
+                <div class="row text-center mb-4">
 
-{% else %}
+                    <div class="col-md-6">
 
-<a
-href="/apply/{{ job.id }}"
-class="btn btn-primary btn-lg w-100">
+                        <h6 class="text-muted">
 
-Apply Now
+                            Budget
 
-</a>
+                        </h6>
 
-{% endif %}
+                        <h3>
 
-<br><br>
+                            ₹{{ "{:,.0f}".format(job.budget) }}
 
-<a
-href="/available-jobs"
-class="btn btn-outline-secondary w-100">
+                        </h3>
 
-Back
+                    </div>
 
-</a>
+                    <div class="col-md-6">
 
-</div>
+                        <h6 class="text-muted">
 
-</div>
+                            Workers Required
 
-</div>
+                        </h6>
+
+                        <h3>
+
+                            {{ job.workers_required }}
+
+                        </h3>
+
+                    </div>
+
+                </div>
+
+                <h5 class="fw-bold">
+
+                    Description
+
+                </h5>
+
+                <div class="bg-light rounded-4 p-4 mb-4">
+
+                    {{ job.description }}
+
+                </div>
+
+                {% if job.status == "Open" %}
+
+                    {% if already_applied %}
+
+                    <button
+                        class="btn btn-success btn-lg w-100"
+                        disabled>
+
+                        <i class="bi bi-check-circle-fill"></i>
+
+                        Already Applied
+
+                    </button>
+
+                    {% else %}
+
+                    <a
+                        href="/apply/{{ job.id }}"
+                        class="btn btn-primary btn-lg w-100">
+
+                        <i class="bi bi-send-fill"></i>
+
+                        Apply Now
+
+                    </a>
+
+                    {% endif %}
+
+                {% elif job.status == "In Progress" %}
+
+                <button
+                    class="btn btn-warning btn-lg w-100"
+                    disabled>
+
+                    <i class="bi bi-hourglass-split"></i>
+
+                    Applications Closed (Work In Progress)
+
+                </button>
+
+                {% elif job.status == "Completed" %}
+
+                <button
+                    class="btn btn-secondary btn-lg w-100"
+                    disabled>
+
+                    <i class="bi bi-check2-all"></i>
+
+                    Job Completed
+
+                </button>
+
+                {% endif %}
+
+                <br><br>
+
+                <a
+                    href="/available-jobs"
+                    class="btn btn-outline-secondary w-100">
+
+                    <i class="bi bi-arrow-left"></i>
+
+                    Back to Available Jobs
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </div>
 
