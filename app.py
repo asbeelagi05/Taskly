@@ -1,4 +1,5 @@
 from flask import Flask, redirect, render_template, url_for
+from flask_login import current_user
 from config import Config
 
 from extensions import db, login_manager
@@ -32,7 +33,21 @@ with app.app_context():
 
 @app.route("/")
 def home():
+    if current_user.is_authenticated:
+        if current_user.role == "customer":
+            return redirect(url_for("customer.dashboard"))
+
+        return redirect(url_for("labour.dashboard"))
+
     return redirect(url_for("auth.login"))
+
+
+@app.after_request
+def add_no_cache_headers(response):
+    response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    return response
 
 
 if __name__ == "__main__":
