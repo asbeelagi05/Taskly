@@ -1,3 +1,14 @@
+from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask_login import login_required, current_user
+
+from extensions import db
+from models.job import Job
+from models.application import Application
+from utils.auth_decorators import labour_required
+
+labour = Blueprint("labour", __name__)
+
+
 @labour.route("/labour/dashboard")
 @login_required
 @labour_required

@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 from config import Config
 
 from extensions import db, login_manager
@@ -31,7 +31,7 @@ with app.app_context():
 
 @app.route("/")
 def home():
-    return "<h1>Taskly Backend Running</h1>"
+    return render_template("index.html")
 
 
 if __name__ == "__main__":
