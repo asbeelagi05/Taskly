@@ -1,12 +1,35 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
+from datetime import datetime
+from sqlalchemy import or_
 
 from extensions import db
 from models.job import Job
 from models.application import Application
-from utils.auth_decorators import customer_required
+from models.user import User
+from models.notification import Notification
+from utils.auth_decorators import customer_required, labour_required
 
 jobs = Blueprint("jobs", __name__)
+
+
+def sync_job_status(job):
+    applications = Application.query.filter_by(job_id=job.id).all()
+    active_applications = [
+        application
+        for application in applications
+        if application.status in {"Accepted", "Declared Finished", "Finished"}
+    ]
+
+    if not active_applications:
+        return
+
+    if all(application.status == "Finished" for application in active_applications):
+        job.status = "Completed"
+    elif any(application.status == "Declared Finished" for application in active_applications):
+        job.status = "Verification Pending"
+    else:
+        job.status = "In Progress"
 
 
 # --------------------------------------------------
@@ -70,7 +93,17 @@ def edit_job(job_id):
     if job.customer_id != current_user.id:
         return "Access Denied", 403
 
+    if job.status == "Completed":
+        flash("Completed jobs cannot be edited.", "warning")
+        return redirect(url_for("jobs.view_job", job_id=job.id))
+
     if request.method == "POST":
+
+        original_title = job.title
+        original_description = job.description
+        original_location = job.location
+        original_budget = job.budget
+        original_workers_required = job.workers_required
 
         job.title = request.form["title"]
         job.description = request.form["description"]
@@ -78,7 +111,28 @@ def edit_job(job_id):
         job.budget = float(request.form["budget"])
         job.workers_required = int(request.form["workers_required"])
 
+        edited_after_acceptance = job.status in {"In Progress", "Verification Pending"}
+
         db.session.commit()
+
+        if edited_after_acceptance:
+            notified_applications = Application.query.filter(
+                Application.job_id == job.id,
+                Application.status.in_(["Accepted", "Declared Finished"])
+            ).all()
+
+            edited_at = datetime.now().strftime("%I:%M %p")
+
+            for application in notified_applications:
+                notification = Notification(
+                    labour_id=application.labour_id,
+                    job_id=job.id,
+                    application_id=application.id,
+                    message=f"{job.title} was edited at {edited_at}. Review it."
+                )
+                db.session.add(notification)
+
+            db.session.commit()
 
         flash("Job updated successfully!", "success")
 
@@ -102,6 +156,10 @@ def delete_job(job_id):
 
     if job.customer_id != current_user.id:
         return "Access Denied", 403
+
+    if job.status != "Open":
+        flash("Finished or accepted jobs cannot be deleted.", "warning")
+        return redirect(url_for("jobs.view_job", job_id=job.id))
 
     if request.method == "POST":
 
@@ -131,14 +189,31 @@ def applicants(job_id):
     if job.customer_id != current_user.id:
         return "Access Denied", 403
 
-    applications = Application.query.filter_by(
-        job_id=job.id
-    ).all()
+    search = request.args.get("search", "").strip()
+    status = request.args.get("status", "All")
+
+    applications = Application.query.filter_by(job_id=job.id)
+
+    if search:
+        applications = applications.join(User, Application.labour_id == User.id).filter(
+            or_(
+                User.name.ilike(f"%{search}%"),
+                User.email.ilike(f"%{search}%"),
+                User.phone.ilike(f"%{search}%")
+            )
+        )
+
+    if status and status != "All":
+        applications = applications.filter(Application.status == status)
+
+    applications = applications.order_by(Application.id.desc()).all()
 
     return render_template(
         "customer/applicants.html",
         job=job,
-        applications=applications
+        applications=applications,
+        search=search,
+        selected_status=status
     )
 
 
@@ -215,7 +290,18 @@ def complete_job(job_id):
     if job.customer_id != current_user.id:
         return "Access Denied", 403
 
-    job.status = "Completed"
+    applications = Application.query.filter_by(job_id=job.id).all()
+    active_applications = [
+        application
+        for application in applications
+        if application.status in {"Accepted", "Declared Finished", "Finished"}
+    ]
+
+    if active_applications and all(application.status == "Finished" for application in active_applications):
+        job.status = "Completed"
+    else:
+        flash("All accepted tasks must be verified before the job can be completed.", "warning")
+        return redirect(url_for("jobs.applicants", job_id=job.id))
 
     db.session.commit()
 
@@ -227,3 +313,57 @@ def complete_job(job_id):
             job_id=job.id
         )
     )
+
+
+# --------------------------------------------------
+# Labour Declares Task Finished
+# --------------------------------------------------
+@jobs.route("/finish-task/<int:application_id>")
+@login_required
+@labour_required
+def finish_task(application_id):
+
+    application = Application.query.get_or_404(application_id)
+    job = Job.query.get_or_404(application.job_id)
+
+    if application.labour_id != current_user.id:
+        return "Access Denied", 403
+
+    if application.status != "Accepted":
+        flash("Only accepted tasks can be declared finished.", "warning")
+        return redirect(url_for("labour.my_applications"))
+
+    application.status = "Declared Finished"
+    sync_job_status(job)
+    db.session.commit()
+
+    flash("Task declared finished. Waiting for customer verification.", "success")
+
+    return redirect(url_for("labour.my_applications"))
+
+
+# --------------------------------------------------
+# Customer Verifies Finished Task
+# --------------------------------------------------
+@jobs.route("/verify-task/<int:application_id>")
+@login_required
+@customer_required
+def verify_task(application_id):
+
+    application = Application.query.get_or_404(application_id)
+    job = Job.query.get_or_404(application.job_id)
+
+    if job.customer_id != current_user.id:
+        return "Access Denied", 403
+
+    if application.status != "Declared Finished":
+        flash("This task is not waiting for verification.", "warning")
+        return redirect(url_for("jobs.applicants", job_id=job.id))
+
+    application.status = "Finished"
+    sync_job_status(job)
+    db.session.commit()
+
+    flash("Task verified and marked as finished.", "success")
+
+    return redirect(url_for("jobs.applicants", job_id=job.id))

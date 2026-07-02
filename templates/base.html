@@ -118,17 +118,23 @@ My Applications
 
 <ul class="navbar-nav ms-auto align-items-center">
 
-<li class="nav-item me-3">
+<li class="nav-item me-2">
 
 <a
-href="/profile"
-class="nav-link fw-semibold">
+href="{{ url_for('customer.profile_page') if current_user.role == 'customer' else url_for('labour.profile_page') }}"
+class="btn btn-outline-primary">
 
 <i class="bi bi-person-circle"></i>
 
-{{ current_user.name }}
+Profile
 
 </a>
+
+</li>
+
+<li class="nav-item me-3 align-self-center text-muted fw-semibold">
+
+{{ current_user.name }}
 
 </li>
 

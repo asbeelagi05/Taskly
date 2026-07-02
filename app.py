@@ -12,6 +12,7 @@ from routes.profile import profile
 from models.user import User
 from models.job import Job
 from models.application import Application
+from models.notification import Notification
 
 app = Flask(__name__)
 app.config.from_object(Config)
