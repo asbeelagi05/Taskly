@@ -33,6 +33,8 @@ def dashboard():
 
     open_jobs = jobs.filter_by(status="Open").count()
 
+    in_progress_jobs = jobs.filter_by(status="In Progress").count()
+
     completed_jobs = jobs.filter_by(status="Completed").count()
 
     average_budget = (
@@ -43,12 +45,6 @@ def dashboard():
 
     if average_budget is None:
         average_budget = 0
-
-    latest_job = (
-        Job.query.filter_by(customer_id=current_user.id)
-        .order_by(Job.id.desc())
-        .first()
-    )
 
     recent_jobs = (
         Job.query.filter_by(customer_id=current_user.id)
@@ -62,12 +58,11 @@ def dashboard():
         greeting=greeting,
         total_jobs=total_jobs,
         open_jobs=open_jobs,
+        in_progress_jobs=in_progress_jobs,
         completed_jobs=completed_jobs,
         average_budget=round(average_budget),
-        latest_job=latest_job,
         recent_jobs=recent_jobs
     )
-
 
 # ---------------------------------
 # My Jobs
