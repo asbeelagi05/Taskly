@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, redirect, render_template, url_for
 from config import Config
 
 from extensions import db, login_manager
@@ -31,7 +31,7 @@ with app.app_context():
 
 @app.route("/")
 def home():
-    return "<h1>Taskly Backend Running</h1>"
+    return redirect(url_for("auth.login"))
 
 
 if __name__ == "__main__":
