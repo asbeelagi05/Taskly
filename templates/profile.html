@@ -4,147 +4,145 @@
 
 <div class="row justify-content-center">
 
-<div class="col-lg-8">
+	<div class="col-lg-10">
 
-<div class="card shadow-sm border-0 rounded-4">
+		<div class="card border-0 rounded-5 shadow-sm overflow-hidden">
 
-<div class="card-body p-5">
+			<div class="card-body p-0">
 
-<div class="text-center mb-5">
+				<div class="p-5 text-white" style="background: linear-gradient(135deg, #0d6efd, #0b5ed7);">
 
-<i class="bi bi-person-circle display-1 text-primary"></i>
+					<div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-4">
 
-<h2 class="fw-bold mt-3">
+						<div class="d-flex align-items-center gap-4">
 
-{{ current_user.name }}
+							<div class="bg-white bg-opacity-20 rounded-circle d-flex align-items-center justify-content-center" style="width: 84px; height: 84px;">
 
-</h2>
+								<i class="bi {{ profile_icon }} display-5"></i>
 
-<p class="text-muted">
+							</div>
 
-{{ current_user.role.title() }}
+							<div>
 
-</p>
+								<p class="text-uppercase text-white-50 small mb-1">{{ profile_title }}</p>
 
-</div>
+								<span class="badge bg-light text-primary mb-2">{{ profile_badge }}</span>
 
-<div class="row">
+								<h2 class="fw-bold mb-1">{{ current_user.name }}</h2>
 
-<div class="col-md-6 mb-3">
+								<p class="mb-0 text-white-50">{{ profile_subtitle }}</p>
 
-<label class="fw-bold">
+							</div>
 
-Email
+						</div>
 
-</label>
+						<div class="text-lg-end">
 
-<p>
+							<p class="mb-1 text-white-50">Role</p>
 
-{{ current_user.email }}
+								<h5 class="mb-0">{{ display_role }}</h5>
 
-</p>
+						</div>
 
-</div>
+					</div>
 
-<div class="col-md-6 mb-3">
+				</div>
 
-<label class="fw-bold">
+				<div class="p-5">
 
-Phone
+					<div class="row g-4 mb-4">
 
-</label>
+						<div class="col-md-6">
 
-<p>
+							<div class="p-4 rounded-4 bg-light h-100">
 
-{{ current_user.phone }}
+								<p class="text-uppercase text-muted small mb-2">Contact</p>
 
-</p>
+								<div class="mb-3">
 
-</div>
+									<div class="fw-semibold">Email</div>
 
-</div>
+									<div class="text-muted">{{ current_user.email }}</div>
 
-<hr>
+								</div>
 
-{% if current_user.role=="customer" %}
+								<div>
 
-<div class="row text-center">
+									<div class="fw-semibold">Phone</div>
 
-<div class="col">
+									<div class="text-muted">{{ current_user.phone or 'Not provided' }}</div>
 
-<h3>
+								</div>
 
-{{ stats.total_jobs }}
+							</div>
 
-</h3>
+						</div>
 
-<p>Total Jobs</p>
+						<div class="col-md-6">
 
-</div>
+							<div class="p-4 rounded-4 bg-light h-100">
 
-<div class="col">
+								<p class="text-uppercase text-muted small mb-2">Quick Actions</p>
 
-<h3>
+								<div class="d-grid gap-3">
 
-{{ stats.open_jobs }}
+									<a href="{{ primary_action_url }}" class="btn btn-primary btn-lg">
 
-</h3>
+										<i class="bi bi-arrow-right-circle me-2"></i>{{ primary_action_label }}
 
-<p>Open Jobs</p>
+									</a>
 
-</div>
+									<a href="/logout" class="btn btn-outline-danger btn-lg">
 
-</div>
+										<i class="bi bi-box-arrow-right me-2"></i>Logout
 
-{% else %}
+									</a>
 
-<div class="row text-center">
+								</div>
 
-<div class="col">
+							</div>
 
-<h3>
+						</div>
 
-{{ stats.applications }}
+					</div>
 
-</h3>
+					<div class="row g-4">
 
-<p>Applications</p>
+						{% for card in stats_cards %}
 
-</div>
+						<div class="col-md-4">
 
-<div class="col">
+							<div class="card border-0 rounded-4 shadow-sm h-100">
 
-<h3>
+								<div class="card-body p-4 text-center">
 
-{{ stats.accepted }}
+									<div class="text-{{ card.tone }} mb-3">
 
-</h3>
+										<i class="bi {{ card.icon }} display-6"></i>
 
-<p>Accepted Jobs</p>
+									</div>
 
-</div>
+									<h3 class="fw-bold mb-1">{{ card.value }}</h3>
 
-</div>
+									<p class="text-muted mb-0">{{ card.label }}</p>
 
-{% endif %}
+								</div>
 
-<hr>
+							</div>
 
-<a
-href="/profile/edit"
-class="btn btn-primary">
+						</div>
 
-<i class="bi bi-pencil-fill"></i>
+						{% endfor %}
 
-Edit Profile
+					</div>
 
-</a>
+				</div>
 
-</div>
+			</div>
 
-</div>
+		</div>
 
-</div>
+	</div>
 
 </div>
 

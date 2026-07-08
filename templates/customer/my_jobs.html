@@ -31,13 +31,13 @@
 
 <div class="row mb-4">
 
-    <div class="col-md-8">
+    <div class="col-md-7">
 
         <input
             type="text"
             class="form-control"
             name="search"
-            placeholder="Search jobs..."
+            placeholder="Search by title, location, or description..."
             value="{{ search }}"
         >
 
@@ -49,15 +49,23 @@
             class="form-select"
             name="status">
 
-            <option {% if selected_status=="All" %}selected{% endif %}>
-                All
+            <option value="All" {% if selected_status=="All" %}selected{% endif %}>
+                All Status
             </option>
 
-            <option {% if selected_status=="Open" %}selected{% endif %}>
+            <option value="Open" {% if selected_status=="Open" %}selected{% endif %}>
                 Open
             </option>
 
-            <option {% if selected_status=="Completed" %}selected{% endif %}>
+            <option value="In Progress" {% if selected_status=="In Progress" %}selected{% endif %}>
+                In Progress
+            </option>
+
+            <option value="Verification Pending" {% if selected_status=="Verification Pending" %}selected{% endif %}>
+                Verification Pending
+            </option>
+
+            <option value="Completed" {% if selected_status=="Completed" %}selected{% endif %}>
                 Completed
             </option>
 
@@ -224,6 +232,8 @@
 
             </a>
 
+            {% if job.status == "Open" %}
+
             <a
                 href="/delete-job/{{ job.id }}"
                 class="btn btn-outline-danger">
@@ -234,8 +244,10 @@
 
             </a>
 
+            {% endif %}
+
             <a
-                href="#"
+                href="/applicants/{{ job.id }}"
                 class="btn btn-outline-success">
 
                 <i class="bi bi-person-lines-fill"></i>

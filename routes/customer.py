@@ -1,13 +1,28 @@
 from flask import Blueprint, render_template, request
 from flask_login import login_required, current_user
 from datetime import datetime
-from sqlalchemy import func
+from sqlalchemy import func, or_
 
 from extensions import db
 from models.job import Job
 from utils.auth_decorators import customer_required
+from routes.profile import build_profile_context
 
 customer = Blueprint("customer", __name__)
+
+
+# ---------------------------------
+# Customer Profile
+# ---------------------------------
+@customer.route("/customer/profile")
+@login_required
+@customer_required
+def profile_page():
+
+    return render_template(
+        "profile.html",
+        **build_profile_context(current_user)
+    )
 
 
 # ---------------------------------
@@ -27,7 +42,22 @@ def dashboard():
     else:
         greeting = "Good Evening 🌙"
 
+    search = request.args.get("search", "").strip()
+    status = request.args.get("status", "All")
+
     jobs = Job.query.filter_by(customer_id=current_user.id)
+
+    if search:
+        jobs = jobs.filter(
+            or_(
+                Job.title.ilike(f"%{search}%"),
+                Job.location.ilike(f"%{search}%"),
+                Job.description.ilike(f"%{search}%")
+            )
+        )
+
+    if status and status != "All":
+        jobs = jobs.filter(Job.status == status)
 
     total_jobs = jobs.count()
 
@@ -47,7 +77,14 @@ def dashboard():
         average_budget = 0
 
     recent_jobs = (
-        Job.query.filter_by(customer_id=current_user.id)
+        jobs
+        .order_by(Job.id.desc())
+        .limit(5)
+        .all()
+    )
+
+    finished_jobs = (
+        jobs.filter(Job.status == "Completed")
         .order_by(Job.id.desc())
         .limit(5)
         .all()
@@ -61,6 +98,11 @@ def dashboard():
         in_progress_jobs=in_progress_jobs,
         completed_jobs=completed_jobs,
         average_budget=round(average_budget),
+        latest_job=latest_job,
+        recent_jobs=recent_jobs,
+        finished_jobs=finished_jobs,
+        search=search,
+        selected_status=status
         recent_jobs=recent_jobs
     )
 
@@ -85,7 +127,11 @@ def my_jobs():
 
     if search:
         query = query.filter(
-            Job.title.ilike(f"%{search}%")
+            or_(
+                Job.title.ilike(f"%{search}%"),
+                Job.location.ilike(f"%{search}%"),
+                Job.description.ilike(f"%{search}%")
+            )
         )
 
     jobs = (

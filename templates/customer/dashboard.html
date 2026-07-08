@@ -22,6 +22,11 @@
 
     <div class="col-lg-4 text-lg-end">
 
+        <a href="/customer/profile" class="btn btn-outline-primary btn-lg me-2">
+            <i class="bi bi-person-circle"></i>
+            Profile
+        </a>
+
         <a href="/post-job" class="btn btn-primary btn-lg">
 
             <i class="bi bi-plus-circle-fill"></i>
@@ -36,6 +41,63 @@
 
 <div class="row g-4 mb-5">
 
+<div class="card border-0 shadow-sm rounded-4 mb-4">
+
+    <div class="card-body p-4">
+
+        <form method="GET" action="/customer/dashboard">
+
+            <div class="row g-3 align-items-center">
+
+                <div class="col-lg-7">
+
+                    <input
+                        type="text"
+                        class="form-control"
+                        name="search"
+                        placeholder="Search your jobs by title, location, or description"
+                        value="{{ search }}"
+                    >
+
+                </div>
+
+                <div class="col-lg-3">
+
+                    <select class="form-select" name="status">
+
+                        <option value="All" {% if selected_status == "All" %}selected{% endif %}>All Status</option>
+                        <option value="Open" {% if selected_status == "Open" %}selected{% endif %}>Open</option>
+                        <option value="In Progress" {% if selected_status == "In Progress" %}selected{% endif %}>In Progress</option>
+                        <option value="Verification Pending" {% if selected_status == "Verification Pending" %}selected{% endif %}>Verification Pending</option>
+                        <option value="Completed" {% if selected_status == "Completed" %}selected{% endif %}>Completed</option>
+
+                    </select>
+
+                </div>
+
+                <div class="col-lg-2 d-grid">
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-search"></i>
+                        Filter
+                    </button>
+
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<div class="row row-cols-1 row-cols-sm-3 g-3 g-lg-4 stats-row">
+
+    <div class="col">
+
+        <div class="card shadow-soft stat-card stat-card-compact">
     <div class="col-md-3">
 
         <div class="card shadow-sm border-0 rounded-4 text-center p-4">
@@ -60,6 +122,11 @@
 
     <div class="col-md-3">
 
+    <div class="col">
+
+        <div class="card shadow-soft stat-card stat-card-compact">
+
+            <i class="bi bi-hourglass-split text-warning"></i>
         <div class="card shadow-sm border-0 rounded-4 text-center p-4">
 
             <i class="bi bi-folder2-open display-5 text-success"></i>
@@ -82,6 +149,9 @@
 
     <div class="col-md-3">
 
+    <div class="col">
+
+        <div class="card shadow-soft stat-card stat-card-compact">
         <div class="card shadow-sm border-0 rounded-4 text-center p-4">
 
             <i class="bi bi-hourglass-split display-5 text-warning"></i>
@@ -302,6 +372,7 @@
 
             </a>
 
+            <a href="/customer/profile" class="btn btn-outline-dark w-100">
             <a href="/profile" class="btn btn-outline-dark w-100">
 
                 <i class="bi bi-person-circle"></i>
@@ -309,6 +380,89 @@
                 My Profile
 
             </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="row mt-5">
+
+    <div class="col-12">
+
+        <div class="card shadow-soft p-4">
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+
+                <h4 class="fw-bold mb-0">Finished Jobs</h4>
+
+                <span class="text-muted">Verified and completed work</span>
+
+            </div>
+
+            {% if finished_jobs %}
+
+                <div class="row g-3">
+
+                    {% for job in finished_jobs %}
+
+                    <div class="col-lg-6">
+
+                        <div class="card border-0 shadow-sm rounded-4 h-100">
+
+                            <div class="card-body p-4">
+
+                                <div class="d-flex justify-content-between align-items-start">
+
+                                    <div>
+
+                                        <h5 class="fw-bold mb-1">{{ job.title }}</h5>
+
+                                        <p class="text-muted mb-0">
+                                            <i class="bi bi-geo-alt-fill"></i>
+                                            {{ job.location }}
+                                        </p>
+
+                                    </div>
+
+                                    <span class="badge bg-primary">{{ job.status }}</span>
+
+                                </div>
+
+                                <hr>
+
+                                <div class="d-flex justify-content-between align-items-center">
+
+                                    <div>
+
+                                        <small class="text-muted d-block">Budget</small>
+                                        <strong>₹{{ job.budget }}</strong>
+
+                                    </div>
+
+                                    <a href="/view-job/{{ job.id }}" class="btn btn-outline-primary btn-sm">View Job</a>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <div class="text-center py-4 text-muted">
+                    No finished jobs yet.
+                </div>
+
+            {% endif %}
 
         </div>
 

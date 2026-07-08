@@ -156,6 +156,8 @@
 
                     </a>
 
+                    {% if job.status == "Open" %}
+
                     <a
                         href="/delete-job/{{ job.id }}"
                         class="btn btn-danger">
