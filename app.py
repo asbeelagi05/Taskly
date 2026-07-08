@@ -1,5 +1,6 @@
 from flask import Flask, redirect, render_template, url_for
 from flask_login import current_user
+from flask import Flask, render_template
 from config import Config
 
 from extensions import db, login_manager
@@ -48,6 +49,7 @@ def add_no_cache_headers(response):
     response.headers["Pragma"] = "no-cache"
     response.headers["Expires"] = "0"
     return response
+    return render_template("index.html")
 
 
 if __name__ == "__main__":

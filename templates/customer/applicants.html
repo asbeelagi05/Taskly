@@ -199,6 +199,142 @@
                             <a href="/reject/{{ application.id }}" class="btn btn-outline-danger">
                                 <i class="bi bi-x-circle-fill"></i>
                                 Reject
+    <div class="col-lg-10">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+
+            <div>
+
+                <h2 class="fw-bold">
+                    Applicants
+                </h2>
+
+                <p class="text-muted">
+                    {{ job.title }}
+                </p>
+
+                <div class="alert alert-info">
+
+                    <strong>Workers Selected:</strong>
+
+                    {{ accepted_count }} / {{ job.workers_required }}
+
+                </div>
+
+            </div>
+
+            <a href="/view-job/{{ job.id }}" class="btn btn-outline-secondary">
+
+                <i class="bi bi-arrow-left"></i>
+
+                Back
+
+            </a>
+
+        </div>
+
+        {% if applications %}
+
+        <div class="row">
+
+            {% for application in applications %}
+
+            <div class="col-lg-6 mb-4">
+
+                <div class="card shadow-sm border-0 rounded-4">
+
+                    <div class="card-body">
+
+                        <div class="d-flex justify-content-between align-items-center">
+
+                            <h4 class="mb-0">
+
+                                {{ application.labour.name }}
+
+                            </h4>
+
+                            {% if application.status=="Applied" %}
+
+                            <span class="badge bg-warning text-dark">
+
+                                Applied
+
+                            </span>
+
+                            {% elif application.status=="Accepted" %}
+
+                            <span class="badge bg-success">
+
+                                Accepted
+
+                            </span>
+
+                            {% else %}
+
+                            <span class="badge bg-danger">
+
+                                Rejected
+
+                            </span>
+
+                            {% endif %}
+
+                        </div>
+
+                        <hr>
+
+                        <p>
+
+                            <i class="bi bi-envelope"></i>
+
+                            {{ application.labour.email }}
+
+                        </p>
+
+                        <p>
+
+                            <i class="bi bi-telephone"></i>
+
+                            {{ application.labour.phone }}
+
+                        </p>
+
+                        {% if application.status=="Applied" %}
+
+                        <div class="d-flex gap-2">
+
+                            {% if accepted_count < job.workers_required %}
+
+                            <a
+                                href="/accept/{{ application.id }}"
+                                class="btn btn-success">
+
+                                <i class="bi bi-check-circle-fill"></i>
+
+                                Accept
+
+                            </a>
+
+                            {% else %}
+
+                            <button
+                                class="btn btn-secondary"
+                                disabled>
+
+                                Hiring Complete
+
+                            </button>
+
+                            {% endif %}
+
+                            <a
+                                href="/reject/{{ application.id }}"
+                                class="btn btn-danger">
+
+                                <i class="bi bi-x-circle-fill"></i>
+
+                                Reject
+
                             </a>
 
                         </div>
@@ -227,6 +363,27 @@
                             This applicant has already been {{ application.status|lower }}.
                             {% endif %}
                         </div>
+                        {% elif application.status=="Accepted" %}
+
+                        <button
+                            class="btn btn-success w-100"
+                            disabled>
+
+                            <i class="bi bi-check-circle-fill"></i>
+
+                            Worker Selected
+
+                        </button>
+
+                        {% else %}
+
+                        <button
+                            class="btn btn-secondary w-100"
+                            disabled>
+
+                            Rejected
+
+                        </button>
 
                         {% endif %}
 
@@ -255,6 +412,9 @@
                 </p>
 
             </div>
+        <div class="alert alert-info">
+
+            No applicants have applied yet.
 
         </div>
 
@@ -264,4 +424,5 @@
 
 </div>
 
+{% endblock %}
 {% endblock %}

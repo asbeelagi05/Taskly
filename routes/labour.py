@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
+from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 
 from sqlalchemy import or_
@@ -179,11 +180,17 @@ def apply(job_id):
                 "labour.view_job",
                 job_id=job.id
             )
-        )
+    available_jobs = Job.query.filter_by(
+        status="Open"
+    ).order_by(Job.id.desc()).limit(6).all()
 
-    application = Application(
-        job_id=job.id,
-        labour_id=current_user.id
+    assigned_jobs = (
+        Job.query.join(Application)
+        .filter(
+            Application.labour_id == current_user.id,
+            Application.status == "Accepted"
+        )
+        .all()
     )
 
     db.session.add(application)
@@ -248,4 +255,15 @@ def my_applications():
         job_alerts=job_alerts,
         search=search,
         selected_status=status
+    application_count = (
+        Application.query.filter_by(
+            labour_id=current_user.id
+        ).count()
+    )
+
+    return render_template(
+        "labour/dashboard.html",
+        jobs=available_jobs,
+        assigned_jobs=assigned_jobs,
+        application_count=application_count
     )

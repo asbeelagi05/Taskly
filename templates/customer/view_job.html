@@ -40,6 +40,14 @@
 
                         </span>
 
+                        {% elif job.status=="In Progress" %}
+
+                        <span class="badge bg-warning text-dark fs-6">
+
+                            {{ job.status }}
+
+                        </span>
+
                         {% elif job.status=="Completed" %}
 
                         <span class="badge bg-primary fs-6">
@@ -50,7 +58,7 @@
 
                         {% else %}
 
-                        <span class="badge bg-warning text-dark fs-6">
+                        <span class="badge bg-secondary fs-6">
 
                             {{ job.status }}
 
@@ -136,6 +144,8 @@
 
                 <div class="d-flex flex-wrap gap-3">
 
+                    {% if job.status == "Open" %}
+
                     <a
                         href="/edit-job/{{ job.id }}"
                         class="btn btn-warning">
@@ -160,23 +170,39 @@
 
                     {% endif %}
 
-                    <a
-                        href="/my-jobs"
-                        class="btn btn-outline-secondary">
+                    {% if job.status == "In Progress" %}
 
-                        Back
+                    <a
+                        href="/complete-job/{{ job.id }}"
+                        class="btn btn-success">
+
+                        <i class="bi bi-check2-circle"></i>
+
+                        Mark as Completed
+
+                    </a>
+
+                    {% endif %}
+
+                    <a
+                        href="/applicants/{{ job.id }}"
+                        class="btn btn-primary">
+
+                        <i class="bi bi-people-fill"></i>
+
+                        Applicants
 
                     </a>
 
                     <a
-    href="/applicants/{{ job.id }}"
-    class="btn btn-success">
+                        href="/my-jobs"
+                        class="btn btn-outline-secondary">
 
-    <i class="bi bi-people-fill"></i>
+                        <i class="bi bi-arrow-left"></i>
 
-    Applicants
+                        Back
 
-</a>
+                    </a>
 
                 </div>
 

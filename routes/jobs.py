@@ -96,6 +96,19 @@ def edit_job(job_id):
     if job.status == "Completed":
         flash("Completed jobs cannot be edited.", "warning")
         return redirect(url_for("jobs.view_job", job_id=job.id))
+    if job.status != "Open":
+
+        flash(
+            "Only open jobs can be edited.",
+            "warning"
+        )
+
+        return redirect(
+            url_for(
+                "jobs.view_job",
+                job_id=job.id
+            )
+        )
 
     if request.method == "POST":
 
@@ -160,6 +173,18 @@ def delete_job(job_id):
     if job.status != "Open":
         flash("Finished or accepted jobs cannot be deleted.", "warning")
         return redirect(url_for("jobs.view_job", job_id=job.id))
+
+        flash(
+            "Only open jobs can be deleted.",
+            "warning"
+        )
+
+        return redirect(
+            url_for(
+                "jobs.view_job",
+                job_id=job.id
+            )
+        )
 
     if request.method == "POST":
 
@@ -226,19 +251,106 @@ def applicants(job_id):
 def accept(application_id):
 
     application = Application.query.get_or_404(application_id)
-
     job = Job.query.get_or_404(application.job_id)
 
     if job.customer_id != current_user.id:
         return "Access Denied", 403
 
+    if job.status != "Open":
+
+        flash(
+            "This job has already started.",
+            "warning"
+        )
+
+        return redirect(
+            url_for(
+                "jobs.applicants",
+                job_id=job.id
+            )
+        )
+
+    # Don't accept the same worker twice
+    if application.status == "Accepted":
+
+        flash(
+            "This worker is already accepted.",
+            "info"
+        )
+
+        return redirect(
+            url_for(
+                "jobs.applicants",
+                job_id=job.id
+            )
+        )
+
+    # Accept selected worker
     application.status = "Accepted"
 
+    db.session.commit()
+
+    # Count accepted workers
+    accepted_count = Application.query.filter_by(
+        job_id=job.id,
+        status="Accepted"
+    ).count()
+
+    # When required workers are reached
+    if accepted_count >= job.workers_required:
+
+        job.status = "In Progress"
+
+        remaining = Application.query.filter(
+            Application.job_id == job.id,
+            Application.status == "Applied"
+        ).all()
+
+        for app in remaining:
+            app.status = "Rejected"
+
+        db.session.commit()
+
+        flash(
+            "Required workers selected. Job is now In Progress.",
+            "success"
+        )
+
+    else:
+
+        flash(
+            f"Worker accepted ({accepted_count}/{job.workers_required}).",
+            "success"
+        )
+
+    return redirect(
+        url_for(
+            "jobs.applicants",
+            job_id=job.id
+        )
+    )
+
+    # Reject everyone else
+    other_applications = Application.query.filter(
+        Application.job_id == job.id,
+        Application.id != application.id
+    ).all()
+
+    for app in other_applications:
+        app.status = "Rejected"
+
+    # Accept selected applicant
+    application.status = "Accepted"
+
+    # Update job
     job.status = "In Progress"
 
     db.session.commit()
 
-    flash("Applicant accepted successfully!", "success")
+    flash(
+        "Applicant accepted successfully!",
+        "success"
+    )
 
     return redirect(
         url_for(
@@ -263,11 +375,28 @@ def reject(application_id):
     if job.customer_id != current_user.id:
         return "Access Denied", 403
 
+    if application.status == "Accepted":
+
+        flash(
+            "Accepted applicant cannot be rejected.",
+            "danger"
+        )
+
+        return redirect(
+            url_for(
+                "jobs.applicants",
+                job_id=job.id
+            )
+        )
+
     application.status = "Rejected"
 
     db.session.commit()
 
-    flash("Applicant rejected.", "warning")
+    flash(
+        "Applicant rejected.",
+        "warning"
+    )
 
     return redirect(
         url_for(
@@ -302,10 +431,28 @@ def complete_job(job_id):
     else:
         flash("All accepted tasks must be verified before the job can be completed.", "warning")
         return redirect(url_for("jobs.applicants", job_id=job.id))
+    if job.status != "In Progress":
+
+        flash(
+            "Only jobs in progress can be completed.",
+            "warning"
+        )
+
+        return redirect(
+            url_for(
+                "jobs.view_job",
+                job_id=job.id
+            )
+        )
+
+    job.status = "Completed"
 
     db.session.commit()
 
-    flash("Job marked as completed!", "success")
+    flash(
+        "Job marked as completed!",
+        "success"
+    )
 
     return redirect(
         url_for(
