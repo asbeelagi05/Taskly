@@ -20,118 +20,141 @@
 
 <body class="bg-light">
 
-<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+<nav class="navbar navbar-expand-sm navbar-light bg-white shadow-sm sticky-top"></nav>
 
-    <div class="container-fluid px-3 px-lg-4">
+<div class="container">
 
-        <a class="navbar-brand fw-bold text-primary" href="/">
+<a class="navbar-brand fw-bold text-primary" href="/">
 
-            <i class="bi bi-tools"></i>
+<i class="bi bi-tools"></i>
 
-            Taskly
+Taskly
 
-        </a>
+</a>
 
-        <button
-            class="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbar"
-            aria-controls="navbar"
-            aria-expanded="false"
-            aria-label="Toggle navigation">
+<button
+class="navbar-toggler"
+type="button"
+data-bs-toggle="collapse"
+data-bs-target="#navbar">
 
-            <span class="navbar-toggler-icon"></span>
+<span class="navbar-toggler-icon"></span>
 
-        </button>
+</button>
 
-        <div class="collapse navbar-collapse" id="navbar">
+<div class="collapse navbar-collapse" id="navbar">
 
-            {% if current_user.is_authenticated %}
+{% if current_user.is_authenticated %}
 
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-lg-1">
+<ul class="navbar-nav me-auto">
 
-                {% if current_user.role=="customer" %}
+{% if current_user.role=="customer" %}
 
-                <li class="nav-item">
+<li class="nav-item">
 
-                    <a class="nav-link" href="/customer/dashboard">Dashboard</a>
+<a class="nav-link" href="/customer/dashboard">
 
-                </li>
+Dashboard
 
-                <li class="nav-item">
+</a>
 
-                    <a class="nav-link" href="/my-jobs">My Jobs</a>
+</li>
 
-                </li>
+<li class="nav-item">
 
-                <li class="nav-item">
+<a class="nav-link" href="/my-jobs">
 
-                    <a class="nav-link" href="/post-job">Post Job</a>
+My Jobs
 
-                </li>
+</a>
 
-                {% elif current_user.role=="labour" %}
+</li>
 
-                <li class="nav-item">
+<li class="nav-item">
 
-                    <a class="nav-link" href="/labour/dashboard">Dashboard</a>
+<a class="nav-link" href="/post-job">
 
-                </li>
+Post Job
 
-                <li class="nav-item">
+</a>
 
-                    <a class="nav-link" href="/available-jobs">Available Jobs</a>
+</li>
 
-                </li>
+{% elif current_user.role=="labour" %}
 
-                <li class="nav-item">
+<li class="nav-item">
 
-                    <a class="nav-link" href="/my-applications">My Applications</a>
+<a class="nav-link" href="/labour/dashboard">
 
-                </li>
+Dashboard
 
-                {% endif %}
+</a>
 
-            </ul>
+</li>
 
-            <div class="navbar-nav ms-auto align-items-lg-center gap-2 flex-wrap">
+<li class="nav-item">
 
-                <span class="navbar-text d-none d-lg-inline text-muted fw-semibold me-2">
+<a class="nav-link" href="/available-jobs">
 
-                    {{ current_user.name }}
+Available Jobs
 
-                </span>
+</a>
 
-                <a
-                    href="{{ url_for('customer.profile_page') if current_user.role == 'customer' else url_for('labour.profile_page') }}"
-                    class="btn btn-outline-primary">
+</li>
 
-                    <i class="bi bi-person-circle"></i>
+<li class="nav-item">
 
-                    Profile
+<a class="nav-link" href="/my-applications">
 
-                </a>
+My Applications
 
-                <a href="/logout" class="btn btn-danger">
+</a>
 
-                    <i class="bi bi-box-arrow-right"></i>
+</li>
 
-                    Logout
+{% endif %}
 
-                </a>
+</ul>
 
-            </div>
+<ul class="navbar-nav ms-auto align-items-center">
 
-            {% endif %}
+<li class="nav-item me-3">
 
-        </div>
+<a
+href="/profile"
+class="nav-link fw-semibold">
 
-    </div>
+<i class="bi bi-person-circle"></i>
+
+{{ current_user.name }}
+
+</a>
+
+</li>
+
+<li class="nav-item">
+
+<a href="/logout" class="btn btn-danger">
+
+<i class="bi bi-box-arrow-right"></i>
+
+Logout
+
+</a>
+
+</li>
+
+</ul>
+
+{% endif %}
+
+</div>
+
+</div>
 
 </nav>
 
-<div class="container-fluid container-xl py-3 py-lg-4 px-3 px-lg-4">
+<div class="container py-4">
 
 {% with messages = get_flashed_messages(with_categories=true) %}
 

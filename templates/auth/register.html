@@ -28,7 +28,7 @@
 
                 </div>
 
-                <form method="POST" id="registerForm">
+                <form method="POST">
 
                     <div class="mb-3">
 
@@ -57,11 +57,8 @@
                         <input
                             type="email"
                             class="form-control"
-                            id="email"
                             name="email"
                             required>
-
-                        <div class="form-text" id="emailFeedback"></div>
 
                     </div>
 
@@ -127,8 +124,7 @@
 
                     <button
                         type="submit"
-                        class="btn btn-primary w-100"
-                        id="registerButton">
+                        class="btn btn-primary w-100">
 
                         Create Account
 
@@ -157,82 +153,5 @@
     </div>
 
 </div>
-
-<script>
-(() => {
-    const emailInput = document.getElementById("email");
-    const feedback = document.getElementById("emailFeedback");
-    const registerButton = document.getElementById("registerButton");
-    const registerForm = document.getElementById("registerForm");
-    let checkTimer = null;
-    let submitBypass = false;
-
-    const setState = (message, isInvalid) => {
-        feedback.textContent = message;
-        feedback.className = isInvalid ? "form-text text-danger" : "form-text text-success";
-        registerButton.disabled = isInvalid;
-    };
-
-    const clearState = () => {
-        feedback.textContent = "";
-        feedback.className = "form-text";
-        registerButton.disabled = false;
-    };
-
-    const checkEmail = async () => {
-        const email = emailInput.value.trim();
-
-        if (!email) {
-            clearState();
-            return null;
-        }
-
-        try {
-            const response = await fetch(`/check-email?email=${encodeURIComponent(email)}`);
-            const data = await response.json();
-
-            if (data.exists) {
-                setState("Email already exists.", true);
-                return true;
-            } else {
-                setState("Email is available.", false);
-                return false;
-            }
-        } catch (error) {
-            clearState();
-            return null;
-        }
-    };
-
-    emailInput.addEventListener("input", () => {
-        registerButton.disabled = false;
-        if (checkTimer) {
-            clearTimeout(checkTimer);
-        }
-
-        checkTimer = setTimeout(checkEmail, 300);
-    });
-
-    emailInput.addEventListener("blur", checkEmail);
-
-    registerForm.addEventListener("submit", async (event) => {
-        if (submitBypass) {
-            submitBypass = false;
-            return;
-        }
-
-        event.preventDefault();
-
-        const exists = await checkEmail();
-
-        if (exists) {
-            return;
-        }
-
-        submitBypass = true;
-        registerForm.requestSubmit();
-    });
-})();
-</script>
 
 {% endblock %}
