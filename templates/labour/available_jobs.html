@@ -2,57 +2,11 @@
 
 {% block content %}
 
-<div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3 mb-4">
+<h2 class="fw-bold mb-4">
 
-	<h2 class="fw-bold mb-0">
+Available Jobs
 
-		Available Jobs
-
-	</h2>
-
-	<form method="GET" action="/available-jobs" class="w-100" style="max-width: 720px;">
-
-		<div class="row g-2">
-
-			<div class="col-md-7">
-
-				<input
-					type="text"
-					class="form-control"
-					name="search"
-					placeholder="Search title, location, or description"
-					value="{{ search }}"
-				>
-
-			</div>
-
-			<div class="col-md-3">
-
-				<select class="form-select" name="sort">
-
-					<option value="newest" {% if selected_sort == "newest" %}selected{% endif %}>Newest</option>
-					<option value="budget_low" {% if selected_sort == "budget_low" %}selected{% endif %}>Budget Low</option>
-					<option value="budget_high" {% if selected_sort == "budget_high" %}selected{% endif %}>Budget High</option>
-
-				</select>
-
-			</div>
-
-			<div class="col-md-2 d-grid">
-
-				<button class="btn btn-primary" type="submit">
-
-					<i class="bi bi-search"></i>
-
-				</button>
-
-			</div>
-
-		</div>
-
-	</form>
-
-</div>
+</h2>
 
 <div class="row">
 

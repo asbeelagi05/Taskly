@@ -4,201 +4,6 @@
 
 <div class="row justify-content-center">
 
-    <div class="col-lg-11">
-
-        <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center mb-4 gap-3">
-
-            <div>
-
-                <h2 class="fw-bold mb-1">Applicants</h2>
-
-                <p class="text-muted mb-0">
-                    {{ job.title }} · {{ applications|length }} applicant{{ '' if applications|length == 1 else 's' }}
-                </p>
-
-            </div>
-
-            <div class="d-flex gap-2">
-
-                <a href="/view-job/{{ job.id }}" class="btn btn-outline-secondary">
-                    <i class="bi bi-arrow-left"></i>
-                    Back to Job
-                </a>
-
-                <a href="/my-jobs" class="btn btn-primary">
-                    <i class="bi bi-briefcase-fill"></i>
-                    My Jobs
-                </a>
-
-            </div>
-
-        </div>
-
-        <div class="card border-0 shadow-sm rounded-4 mb-4">
-
-            <div class="card-body p-4">
-
-                <form method="GET" action="/applicants/{{ job.id }}">
-
-                    <div class="row g-3 align-items-center">
-
-                        <div class="col-lg-7">
-
-                            <input
-                                type="text"
-                                class="form-control"
-                                name="search"
-                                placeholder="Search applicant name, email, or phone"
-                                value="{{ search }}"
-                            >
-
-                        </div>
-
-                        <div class="col-lg-3">
-
-                            <select class="form-select" name="status">
-
-                                <option value="All" {% if selected_status == "All" %}selected{% endif %}>All Status</option>
-                                <option value="Applied" {% if selected_status == "Applied" %}selected{% endif %}>Applied</option>
-                                <option value="Accepted" {% if selected_status == "Accepted" %}selected{% endif %}>Accepted</option>
-                                <option value="Declared Finished" {% if selected_status == "Declared Finished" %}selected{% endif %}>Waiting Verification</option>
-                                <option value="Finished" {% if selected_status == "Finished" %}selected{% endif %}>Finished</option>
-                                <option value="Rejected" {% if selected_status == "Rejected" %}selected{% endif %}>Rejected</option>
-
-                            </select>
-
-                        </div>
-
-                        <div class="col-lg-2 d-grid">
-
-                            <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-search"></i>
-                                Filter
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                </form>
-
-                <hr>
-
-                <div class="row g-4 align-items-center">
-
-                    <div class="col-md-8">
-
-                        <h4 class="fw-bold mb-2">{{ job.title }}</h4>
-
-                        <p class="text-muted mb-0">
-                            <i class="bi bi-geo-alt-fill"></i>
-                            {{ job.location }}
-                        </p>
-
-                    </div>
-
-                    <div class="col-md-4 text-md-end">
-
-                        {% if job.status == "Open" %}
-                        <span class="badge bg-success fs-6">{{ job.status }}</span>
-                        {% elif job.status == "Completed" %}
-                        <span class="badge bg-primary fs-6">{{ job.status }}</span>
-                        {% else %}
-                        <span class="badge bg-warning text-dark fs-6">{{ job.status }}</span>
-                        {% endif %}
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        {% if applications %}
-
-        <div class="row g-4">
-
-            {% for application in applications %}
-
-            <div class="col-lg-6">
-
-                <div class="card border-0 shadow-sm rounded-4 h-100">
-
-                    <div class="card-body p-4">
-
-                        <div class="d-flex justify-content-between align-items-start mb-3">
-
-                            <div class="d-flex align-items-center gap-3">
-
-                                <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 56px; height: 56px;">
-
-                                    <i class="bi bi-person-fill fs-4"></i>
-
-                                </div>
-
-                                <div>
-
-                                    <h5 class="fw-bold mb-1">{{ application.labour.name }}</h5>
-
-                                    <p class="text-muted mb-0">Applied {{ application.applied_at.strftime("%d %b %Y") if application.applied_at else 'Recently' }}</p>
-
-                                </div>
-
-                            </div>
-
-                            {% if application.status == "Accepted" %}
-                            <span class="badge bg-success">Accepted</span>
-                            {% elif application.status == "Declared Finished" %}
-                            <span class="badge bg-info text-dark">Waiting Verification</span>
-                            {% elif application.status == "Finished" %}
-                            <span class="badge bg-primary">Finished</span>
-                            {% elif application.status == "Rejected" %}
-                            <span class="badge bg-danger">Rejected</span>
-                            {% else %}
-                            <span class="badge bg-warning text-dark">Applied</span>
-                            {% endif %}
-
-                        </div>
-
-                        <div class="row g-3 mb-4">
-
-                            <div class="col-md-6">
-
-                                <div class="p-3 rounded-4 bg-light h-100">
-
-                                    <small class="text-muted d-block mb-1">Email</small>
-                                    <div class="fw-semibold">{{ application.labour.email }}</div>
-
-                                </div>
-
-                            </div>
-
-                            <div class="col-md-6">
-
-                                <div class="p-3 rounded-4 bg-light h-100">
-
-                                    <small class="text-muted d-block mb-1">Phone</small>
-                                    <div class="fw-semibold">{{ application.labour.phone or 'Not provided' }}</div>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                        {% if application.status == "Applied" %}
-
-                        <div class="d-flex flex-wrap gap-2">
-
-                            <a href="/accept/{{ application.id }}" class="btn btn-success">
-                                <i class="bi bi-check-circle-fill"></i>
-                                Accept
-                            </a>
-
-                            <a href="/reject/{{ application.id }}" class="btn btn-outline-danger">
-                                <i class="bi bi-x-circle-fill"></i>
-                                Reject
     <div class="col-lg-10">
 
         <div class="d-flex justify-content-between align-items-center mb-4">
@@ -339,30 +144,6 @@
 
                         </div>
 
-                        {% elif application.status == "Declared Finished" %}
-
-                        <div class="d-flex flex-wrap gap-2 align-items-center">
-
-                            <a href="/verify-task/{{ application.id }}" class="btn btn-success">
-                                <i class="bi bi-check2-circle"></i>
-                                Verify & Finish
-                            </a>
-
-                            <span class="text-muted small">
-                                Labour has declared this task finished.
-                            </span>
-
-                        </div>
-
-                        {% else %}
-
-                        <div class="text-muted small">
-                            {% if application.status == "Finished" %}
-                            This task has been verified and finished.
-                            {% else %}
-                            This applicant has already been {{ application.status|lower }}.
-                            {% endif %}
-                        </div>
                         {% elif application.status=="Accepted" %}
 
                         <button
@@ -399,19 +180,6 @@
 
         {% else %}
 
-        <div class="card border-0 shadow-sm rounded-4">
-
-            <div class="card-body text-center py-5">
-
-                <i class="bi bi-people display-1 text-secondary"></i>
-
-                <h3 class="mt-4">No Applicants Yet</h3>
-
-                <p class="text-muted mb-0">
-                    Once labourers apply, their profiles will appear here.
-                </p>
-
-            </div>
         <div class="alert alert-info">
 
             No applicants have applied yet.
@@ -424,5 +192,4 @@
 
 </div>
 
-{% endblock %}
 {% endblock %}
